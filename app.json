@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "AwesomeProject",
+    "slug": "AwesomeProject",
+    "version": "1.0.0",
+    "scheme": "AwesomeProject",
+    "orientation": "portrait",
+
+    "userInterfaceStyle": "light",
+
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+
+    "plugins": [
+      [
+        "expo-font",
+
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/noto/NotoSans_Condensed-Medium.ttf",
+            "node_modules/@expo-google-fonts/nunito/Nunito-Medium.ttf"
+          ]
+        }
+      ]
+    ]
+  }
+}
