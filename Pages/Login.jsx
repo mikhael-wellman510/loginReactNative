@@ -16,24 +16,35 @@ import * as WebBrowser from "expo-web-browser";
 import { useOAuth } from "@clerk/clerk-expo";
 import { useWarmUpBrowser } from "../Hooks/useWarmUpBrowser";
 import axios from "axios";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Navigation from "../Navigation/Navigation";
+import { NavigationContainer } from "@react-navigation/native";
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  console.log(username);
-
+  const [valid, setValid] = useState(false);
   const Logins = async (username, password) => {
     try {
       console.log("test: ", username);
       console.log("pw: ", password);
-      const login = await axios.post("http://localhost:8080/api/auth/login", {
-        username,
-        password,
-      });
+      const login = await axios.post(
+        "http://10.10.100.238:8080/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
+      if (login) {
+        setValid(true);
+        navigation.navigate("Home");
+      }
 
-      console.log("hasil : ", login);
+      const token = login.data.data.token;
+
+      await AsyncStorage.setItem("token", token);
     } catch (error) {
       console.log(error.message);
     }
@@ -50,7 +61,6 @@ const Login = ({ navigation }) => {
       if (createdSessionId) {
         setActive({ session: createdSessionId });
       } else {
-        // Use signIn or signUp for next steps such as MFA
       }
     } catch (err) {
       console.error("OAuth error", err);
@@ -58,67 +68,79 @@ const Login = ({ navigation }) => {
   }, []);
 
   return (
-    <NativeBaseProvider>
-      <ScrollView contentContainerStyle={style.scrollContainer}>
-        <View style={style.a1}>
-          <View style={style.t1}>
-            <Image style={style.logo} source={tes} />
-            <View style={style.text}>
-              <Text style={style.tc}>Let's Sign you in.</Text>
-              <Text
-                style={{
-                  textAlign: "center",
-                  color: "#c5c4d5",
+    <>
+      {valid ? (
+        <NavigationContainer>
+          <Navigation />
+        </NavigationContainer>
+      ) : (
+        <NativeBaseProvider>
+          <ScrollView contentContainerStyle={style.scrollContainer}>
+            <View style={style.a1}>
+              <View style={style.t1}>
+                <Image style={style.logo} source={tes} />
+                <View style={style.text}>
+                  <Text style={style.tc}>Let's Sign you in.</Text>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#c5c4d5",
 
-                  width: 320,
-                }}
-              >
-                Sign in with your data that you have entered during your
-                registration
-              </Text>
-            </View>
-          </View>
-          <View style={style.t2}>
-            <View style={style.tt}>
-              <Text style={{ paddingLeft: 5, color: "#b4b3c8" }}>Email</Text>
-              <Input
-                onChangeText={setUsername}
-                value={username}
-                borderColor={"#b4b3c8"}
-                variant={"underlined"}
-              />
-            </View>
-            <View style={style.tt}>
-              <Text style={{ paddingLeft: 5, color: "#b4b3c8" }}>Password</Text>
-              <Input
-                onChangeText={setPassword}
-                value={password}
-                borderColor={"#b4b3c8"}
-                variant={"underlined"}
-              />
-            </View>
+                      width: 320,
+                    }}
+                  >
+                    Sign in with your data that you have entered during your
+                    registration
+                  </Text>
+                </View>
+              </View>
+              <View style={style.t2}>
+                <View style={style.tt}>
+                  <Text style={{ paddingLeft: 5, color: "#b4b3c8" }}>
+                    Email
+                  </Text>
+                  <Input
+                    onChangeText={setUsername}
+                    value={username}
+                    borderColor={"#b4b3c8"}
+                    variant={"underlined"}
+                  />
+                </View>
+                <View style={style.tt}>
+                  <Text style={{ paddingLeft: 5, color: "#b4b3c8" }}>
+                    Password
+                  </Text>
+                  <Input
+                    onChangeText={setPassword}
+                    value={password}
+                    borderColor={"#b4b3c8"}
+                    variant={"underlined"}
+                  />
+                </View>
 
-            <Text style={style.tt1}>Forget Password?</Text>
-          </View>
-          <View style={style.t3}>
-            <TouchableOpacity
-              onPress={() => Logins(username, password)}
-              style={style.button}
-            >
-              <Text style={{ color: "white" }}>Sign In</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onPress} style={style.button1}>
-              <Image source={google} style={style.google} />
-              <Text>Sign In With Google</Text>
-            </TouchableOpacity>
-            <Text style={{ color: "#bbbbbb" }}>
-              Don't have an account?
-              <Text style={{ color: "#050049" }}> Register</Text>
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-    </NativeBaseProvider>
+                <Text style={style.tt1}>Forget Password?</Text>
+              </View>
+              <View style={style.t3}>
+                <TouchableOpacity
+                  onPress={() => Logins(username, password)}
+                  style={style.button}
+                >
+                  <Text style={{ color: "white" }}>Sign In</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPress} style={style.button1}>
+                  <Image source={google} style={style.google} />
+                  <Text>Sign In With Google</Text>
+                </TouchableOpacity>
+                <Text style={{ color: "#bbbbbb" }}>
+                  Don't have an account?
+                  <Text style={{ color: "#050049" }}> Register</Text>
+                </Text>
+              </View>
+            </View>
+          </ScrollView>
+        </NativeBaseProvider>
+      )}
+    </>
   );
 };
 const style = StyleSheet.create({

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../Pages/Home";
@@ -9,14 +9,19 @@ import Messages from "../Pages/Messages";
 import Profile from "../Pages/Profile";
 import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Tab = createBottomTabNavigator();
-
-export default function Navigation() {
+const Stack = createNativeStackNavigator();
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+export default function Navigation({ navigation }) {
   const color = {
     color: "red",
   };
+
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {

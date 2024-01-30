@@ -4,8 +4,11 @@ import Login from "./Pages/Login";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-expo";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import Navigation from "./Navigation/Navigation";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
@@ -15,11 +18,12 @@ export default function App() {
       }
     >
       <View style={styles.container}>
-        <SignedIn>
-          <NavigationContainer>
+        <NavigationContainer>
+          <SignedIn>
             <Navigation />
-          </NavigationContainer>
-        </SignedIn>
+          </SignedIn>
+        </NavigationContainer>
+
         <SignedOut>
           <Login />
         </SignedOut>

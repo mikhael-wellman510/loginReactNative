@@ -7,7 +7,7 @@ import TopBrands from "../Components/Home/TopBrands";
 import CarRecomendation from "../Components/Home/CarRecomendation";
 const Home = ({ navigation }) => {
   const { user } = useUser();
-  console.log("hhss:", user);
+
   return (
     <>
       <View style={style.container}>
